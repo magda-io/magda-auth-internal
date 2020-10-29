@@ -29,10 +29,10 @@ authPluginRedirectUrl:
 
 authPluginConfig:
   # -- the unique key of the auth plugin. Allowed characters: [a-zA-Z0-9\-]
-  key: "test-auth-plugin"
+  key: "internal"
   
   # -- the display name of the auth plugin.
-  name: "Test Auth Plugin"
+  name: "MAGDA"
   
   # -- the display icon URL of the auth plugin.
   iconUrl: "/icon.svg"
@@ -44,20 +44,20 @@ authPluginConfig:
   # <li>`QR-CODE`: the plugin offers a url that is used by the frontend to request auth challenge data. The data will be encoded into a QR-code image and expect the user scan the QR code with a mobile app to complete the authentication request.</li>
   # </ul>
   # See [Authentication Plugin Specification](https://github.com/magda-io/magda/blob/master/docs/docs/authentication-plugin-spec.md) for more details
-  authenticationMethod: "IDP-URI-REDIRECTION"
+  authenticationMethod: "PASSWORD"
   
   # -- Optional; Only applicable when authenticationMethod = "PASSWORD".
   # If present, will displayed the heading underneath the login form to provide extra info to users. e.g. how to reset password
-  loginFormExtraInfoHeading: ""
+  loginFormExtraInfoHeading: "Forgot your password?"
   
   # -- Optional; Only applicable when authenticationMethod = "PASSWORD".
   # If present, will displayed the content underneath the login form to provide extra info to users. e.g. how to reset password
   # Can support content in markdown format.
-  loginFormExtraInfoContent: ""
+  loginFormExtraInfoContent: "Forgot your password? Email system admin."
   
   # -- Optional; Only applicable when authenticationMethod = "PASSWORD".
   # @default -- "Username"
-  loginFormUsernameFieldLabel: ""
+  loginFormUsernameFieldLabel: "Email Address"
 
   # -- Optional; Only applicable when authenticationMethod = "PASSWORD".
   # @default -- "Password"

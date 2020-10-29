@@ -48,12 +48,14 @@ const argv = yargs
         default: 5432
     })
     .option("authDBHost", {
-        describe: "The host running the auth database for verifying local password.",
+        describe:
+            "The host running the auth database for verifying local password.",
         type: "string",
         default: "localhost"
     })
     .option("authDBPort", {
-        describe: "The port running the auth database for verifying local password",
+        describe:
+            "The port running the auth database for verifying local password",
         type: "number",
         default: 5432
     })
@@ -104,7 +106,7 @@ app.get("/healthz", (req, res) => res.send("OK"));
  * a 36x36 size icon to be shown on frontend login page
  */
 app.get("/icon.svg", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "../assets/generic-logo.svg"))
+    res.sendFile(path.resolve(__dirname, "../assets/magda.png"))
 );
 
 /**
