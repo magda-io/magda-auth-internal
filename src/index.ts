@@ -2,11 +2,12 @@ import express from "express";
 import path from "path";
 import yargs from "yargs";
 import createAuthPluginRouter from "./createAuthPluginRouter";
-import AuthApiClient, { UserToken } from "@magda/auth-api-client";
 import {
     createMagdaSessionRouter,
     AuthPluginConfig
 } from "@magda/authentication-plugin-sdk";
+import { UserToken } from "@magda/auth-api-client";
+import createPool from "./createPool";
 
 const coerceJson = (path?: string) => path && require(path);
 
@@ -43,6 +44,16 @@ const argv = yargs
     })
     .option("dbPort", {
         describe: "The port running the session database.",
+        type: "number",
+        default: 5432
+    })
+    .option("authDBHost", {
+        describe: "The host running the auth database for verifying local password.",
+        type: "string",
+        default: "localhost"
+    })
+    .option("authDBPort", {
+        describe: "The port running the auth database for verifying local password",
         type: "number",
         default: 5432
     })
@@ -135,19 +146,14 @@ app.use(passport.initialize());
 // initialise passport session
 app.use(passport.session());
 
-const authApiClient = new AuthApiClient(
-    argv.authApiUrl,
-    argv.jwtSecret,
-    argv.userId
-);
-
 app.use(
     createAuthPluginRouter({
         passport: passport,
-        authorizationApi: authApiClient,
-        // you might want to update the helm chart to pass clientId & clientSecret provided by your idp (identity provied)
-        clientId: "My clientId",
-        clientSecret: "My clientSecret",
+        dbPool: createPool({
+            database: "auth",
+            dbHost: argv.authDBHost,
+            dbPort: argv.authDBPort
+        }),
         externalUrl: argv.externalUrl,
         authPluginRedirectUrl: argv.authPluginRedirectUrl
     })
