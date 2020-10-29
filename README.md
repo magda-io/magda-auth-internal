@@ -1,14 +1,14 @@
-# magda-auth-template
+# magda-auth-internal
 
 ![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)
 
 A Magda Authentication Plugin Template. You can use this as a base to build your own Magda Authentication Plugin.
 
-**Homepage:** <https://github.com/magda-io/magda-auth-template>
+**Homepage:** <https://github.com/magda-io/magda-auth-internal>
 
 ## About this document
 
-This document is auto-generated from helm chart [values file](deploy/magda-auth-template/values.yaml) comments and template [README.md.gotmpl](./README.md.gotmpl) using [helm-docs](https://github.com/norwoodj/helm-docs).
+This document is auto-generated from helm chart [values file](deploy/magda-auth-internal/values.yaml) comments and template [README.md.gotmpl](./README.md.gotmpl) using [helm-docs](https://github.com/norwoodj/helm-docs).
 
 Once you installed `helm-docs`, you can re-generate the docs by running:
 
@@ -23,7 +23,7 @@ To generate a new repo from this template repo, please see [here](https://docs.g
 If you are new to this, please have a read [Authentication Plugin Specification](https://github.com/magda-io/magda/blob/master/docs/docs/authentication-plugin-spec.md).
 
 Once you create a new repo, you can:
-- Replace `magda-auth-template` keywords with your auth plugin name
+- Replace `magda-auth-internal` keywords with your auth plugin name
 - Add your authentication logic to [createAuthPluginRouter.ts](./src/createAuthPluginRouter.ts)
   - You can find passport.js `strategies` that support different IDPs (identity providers) or authentication servers from [here](http://www.passportjs.org/packages/).
 - Update authentication config in [index.ts](./src/index.ts)
@@ -54,7 +54,7 @@ How you can :
 
 ## Source Code
 
-* <https://github.com/magda-io/magda-auth-template>
+* <https://github.com/magda-io/magda-auth-internal>
 
 ## Requirements
 

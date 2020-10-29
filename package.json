@@ -1,8 +1,8 @@
 {
-  "name": "magda-auth-template",
+  "name": "magda-auth-internal",
   "version": "1.0.0",
   "description": "A Magda Authentication Plugin Template. You can use this as a base to build your own Authentication Plugin",
-  "repository": "https://github.com/magda-io/magda-auth-template.git",
+  "repository": "https://github.com/magda-io/magda-auth-internal.git",
   "author": "",
   "license": "Apache-2.0",
   "private": true,
@@ -15,19 +15,21 @@
     "test": "mocha --require ts-node/register \"src/test/**/*.spec.ts\"",
     "docker-build-local": "create-docker-context-for-node-component --build --push --tag auto --local",
     "docker-build-prod": "create-docker-context-for-node-component --build --push --tag auto",
-    "helm-lint": "helm lint deploy/magda-auth-template -f deploy/test-deploy.yaml",
+    "helm-lint": "helm lint deploy/magda-auth-internal -f deploy/test-deploy.yaml",
     "helm-docs": "helm-docs -t ./README.md.gotmpl -o ../../README.md",
     "retag-and-push": "retag-and-push"
   },
   "devDependencies": {
-    "@magda/scripts": "^0.0.57",
+    "@magda/docker-utils": "^0.0.58-alpha.2",
     "@types/express": "^4.0.37",
     "@types/lodash": "^4.14.162",
     "@types/mocha": "^8.0.3",
     "@types/passport": "1.0.3",
     "@types/urijs": "^1.19.12",
     "@types/yargs": "^15.0.9",
-    "mocha": "^8.2.0"
+    "mocha": "^8.2.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.9.5"
   },
   "dependencies": {
     "@magda/auth-api-client": "^0.0.58-alpha.4",
@@ -40,7 +42,7 @@
   },
   "config": {
     "docker": {
-      "name": "data61/magda-auth-template",
+      "name": "data61/magda-auth-internal",
       "include": "node_modules dist Dockerfile package.json assets"
     },
     "jwtSecret": "squirrel",
