@@ -26,6 +26,9 @@ export default function createAuthPluginRouter(
 
     const router: express.Router = express.Router();
 
+    // LocalStrategy requires `body-parser` middleware to work
+    router.use(require("body-parser").urlencoded({ extended: true }));
+
     passport.use(
         "magda-internal",
         new LocalStrategy(
