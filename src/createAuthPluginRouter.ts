@@ -3,7 +3,11 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { Authenticator } from "passport";
 import pg from "pg";
 import bcrypt from "bcrypt";
-import { redirectOnSuccess, redirectOnError, getAbsoluteUrl } from "@magda/authentication-plugin-sdk";
+import {
+    redirectOnSuccess,
+    redirectOnError,
+    getAbsoluteUrl
+} from "@magda/authentication-plugin-sdk";
 
 export interface AuthPluginRouterOptions {
     passport: Authenticator;
@@ -22,7 +26,6 @@ export default function createAuthPluginRouter(
         options.authPluginRedirectUrl,
         externalUrl
     );
-    
 
     const router: express.Router = express.Router();
 
@@ -84,6 +87,20 @@ export default function createAuthPluginRouter(
         )
     );
 
+    router.get("/", function (req, res) {
+        // redirect users according to [spec document](https://github.com/magda-io/magda/blob/master/docs/docs/authentication-plugin-spec.md)
+        const runtimeRedirectUrl =
+            typeof req?.query?.redirect === "string" && req.query.redirect
+                ? getAbsoluteUrl(req.query.redirect, externalUrl)
+                : resultRedirectionUrl;
+
+        if (req?.user?.id) {
+            redirectOnSuccess(runtimeRedirectUrl, req, res);
+        } else {
+            redirectOnError("unauthorized", runtimeRedirectUrl, req, res);
+        }
+    });
+
     router.post(
         "/",
         (
@@ -91,6 +108,11 @@ export default function createAuthPluginRouter(
             res: express.Response,
             next: express.NextFunction
         ) => {
+            res.locals.redirectUrl =
+                typeof req?.query?.redirect === "string" && req.query.redirect
+                    ? getAbsoluteUrl(req.query.redirect, externalUrl)
+                    : resultRedirectionUrl;
+
             passport.authenticate("magda-internal", {
                 failWithError: true
             })(req, res, next);
@@ -100,11 +122,7 @@ export default function createAuthPluginRouter(
             res: express.Response,
             next: express.NextFunction
         ) => {
-            redirectOnSuccess(
-                resultRedirectionUrl,
-                req,
-                res
-            );
+            redirectOnSuccess(res.locals.redirectUrl, req, res);
         },
         (
             err: any,
@@ -112,12 +130,7 @@ export default function createAuthPluginRouter(
             res: express.Response,
             next: express.NextFunction
         ): any => {
-            redirectOnError(
-                err,
-                resultRedirectionUrl,
-                req,
-                res
-            );
+            redirectOnError(err, res.locals.redirectUrl, req, res);
         }
     );
 
