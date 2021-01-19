@@ -32,6 +32,7 @@ By Default, a random password will be auto generate if -p or --password option d
 The database connection to auth DB is required, the following environment variables will be used to create a connection:
   POSTGRES_HOST: database host; If not available in env var, 'localhost' will be used.
   POSTGRES_DB: database name; If not available in env var, 'auth' will be used.
+  POSTGRES_PORT: database port; If not available in env var, 5432 will be used.
   POSTGRES_USER: database username; If not available in env var, 'postgres' will be used.
   POSTGRES_PASSWORD: database password; If not available in env var, '' will be used.
 
