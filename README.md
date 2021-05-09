@@ -1,12 +1,38 @@
 # magda-auth-internal
 
-![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)
+![Version: 1.0.1](https://img.shields.io/badge/Version-1.0.1-informational?style=flat-square)
 
 A MAGDA authentication plugin supports local password authentication.
 
 Requires MAGDA version 0.0.58 or above.
 
-To deploy the authentication plugin with your MAGDA instance, please check [MAGDA Gateway Helm Chart Document](https://github.com/magda-io/magda/blob/master/deploy/helm/internal-charts/gateway/README.md)
+### How to Use
+
+1. Add the auth plugin as a [Helm Chart Dependency](https://helm.sh/docs/helm/helm_dependency/) in your deployment Helm Chart [Chart.yaml](https://helm.sh/docs/topics/charts/#chart-dependencies):
+```yaml
+- name: magda-auth-internal
+  version: 1.0.1 # or put latest version number here
+  repository: https://charts.magda.io
+  tags:
+    - all
+    - magda-auth-internal
+```
+
+2. (Optional) Config the auth plugin in your deployment [Values file](https://helm.sh/docs/chart_template_guide/values_files/). Support parameters can be found from the `Values` section below:
+e.g. You can optionally set the text content below the login form.
+```yaml
+magda-auth-internal:
+  authPluginConfig:
+    loginFormExtraInfoContent: "Forgot your password? Email [test@test.com](test@test.com)"
+```
+
+3. Config Gatway (in your deployment [Values file](https://helm.sh/docs/chart_template_guide/values_files/)) to add the auth plugin to Gateway's plugin list (More details see [here](https://github.com/magda-io/magda/blob/master/deploy/helm/internal-charts/gateway/README.md))
+```yaml
+gateway:
+  authPlugins:
+  - key: internal
+    baseUrl: http://magda-auth-internal
+```
 
 **Homepage:** <https://github.com/magda-io/magda-auth-internal>
 
@@ -32,7 +58,6 @@ By Default, a random password will be auto generate if -p or --password option d
 The database connection to auth DB is required, the following environment variables will be used to create a connection:
   POSTGRES_HOST: database host; If not available in env var, 'localhost' will be used.
   POSTGRES_DB: database name; If not available in env var, 'auth' will be used.
-  POSTGRES_PORT: database port; If not available in env var, 5432 will be used.
   POSTGRES_USER: database username; If not available in env var, 'postgres' will be used.
   POSTGRES_PASSWORD: database password; If not available in env var, '' will be used.
 
