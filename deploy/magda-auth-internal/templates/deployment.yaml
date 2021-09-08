@@ -71,6 +71,8 @@ See chart value file for details of the logic used to generate this setting valu
             secretKeyRef:
               name: auth-secrets
               key: session-secret
+        - name: PGUSER
+          value: client
 {{- $dbSecret := (lookup "v1" "Secret" .Release.Namespace "session-db-password") | default dict }}
 {{- $combinedBbSecret := (lookup "v1" "Secret" .Release.Namespace "combined-db-password") | default dict }}
 {{- $legacyDbSecret := (lookup "v1" "Secret" .Release.Namespace "db-passwords") | default dict }}
