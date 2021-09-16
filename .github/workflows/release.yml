@@ -5,6 +5,8 @@ on:
     types: [published]
 
 env:
+  # [avoid issue when Github action upgraded from 18.04 default to 20.04](https://github.com/aws/aws-cli/issues/5262)
+  AWS_EC2_METADATA_DISABLED: true
   REPO_NAME: magda-auth-internal
   # Github account username (used for access github registry)
   GH_USERNAME: magdabot
@@ -22,18 +24,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Use Node.js 10
+      - name: Use Node.js 12
         uses: actions/setup-node@v1
         with:
-          node-version: 10
+          node-version: 12
       - run: yarn install
       - run: yarn build
       - run: yarn test
-
-      - name: Setup Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.2.0
 
       - name: helm-check
         run: yarn helm-lint
@@ -72,5 +69,5 @@ jobs:
           helm package -d sync_dir ${REPO_NAME}
           helm repo index --merge "index_dir/index.yaml" sync_dir
           mv -f sync_dir/index.yaml index_dir/index.yaml
-          aws s3 sync sync_dir s3://${S3_BUCKET}/ --acl public-read
-          aws s3 cp index_dir/index.yaml s3://${S3_BUCKET}/index.yaml --acl public-read
+          aws s3 sync sync_dir s3://${S3_BUCKET}/
+          aws s3 cp index_dir/index.yaml s3://${S3_BUCKET}/index.yaml

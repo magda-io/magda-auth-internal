@@ -9,6 +9,14 @@ import {
     getAbsoluteUrl
 } from "@magda/authentication-plugin-sdk";
 
+declare global {
+    namespace Express {
+        interface User {
+            id: string;
+        }
+    }
+}
+
 export interface AuthPluginRouterOptions {
     passport: Authenticator;
     externalUrl: string;
