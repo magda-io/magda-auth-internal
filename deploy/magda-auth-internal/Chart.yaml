@@ -1,7 +1,7 @@
 apiVersion: v2
 name: magda-auth-internal
 description: A MAGDA authentication plugin supports local password authentication.
-version: "1.2.2"
+version: "1.2.3"
 kubeVersion: ">= 1.14.0-0"
 home: "https://github.com/magda-io/magda-auth-internal"
 sources: [ "https://github.com/magda-io/magda-auth-internal" ]
