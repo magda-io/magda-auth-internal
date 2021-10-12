@@ -80,7 +80,7 @@ Kubernetes: `>= 1.14.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.magda.io | magda-common | 1.0.0-alpha.0 |
+| https://charts.magda.io | magda-common | 1.0.0-alpha.4 |
 
 ## Values
 
@@ -105,11 +105,10 @@ Kubernetes: `>= 1.14.0-0`
 | autoscaler.targetCPUUtilizationPercentage | int | `80` |  |
 | defaultAdminUserId | string | `"00000000-0000-4000-8000-000000000000"` | which system account we used to talk to auth api The value of this field will only be used when `global.defaultAdminUserId` has no value |
 | defaultImage.imagePullSecret | bool | `false` |  |
-| defaultImage.name | string | `"magda-auth-internal"` |  |
 | defaultImage.pullPolicy | string | `"IfNotPresent"` |  |
 | defaultImage.repository | string | `"docker.io/data61"` |  |
 | global | object | `{"authPluginRedirectUrl":"/sign-in-redirect","externalUrl":"","image":{},"rollingUpdate":{}}` | only for providing appropriate default value for helm lint |
-| image | object | `{}` |  |
+| image.name | string | `"magda-auth-internal"` |  |
 | replicas | int | `1` | no. of initial replicas |
 | resources.limits.cpu | string | `"50m"` |  |
 | resources.requests.cpu | string | `"10m"` |  |
