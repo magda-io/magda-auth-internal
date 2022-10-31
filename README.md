@@ -80,7 +80,7 @@ Kubernetes: `>= 1.14.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.magda.io | magda-common | 1.0.0-alpha.4 |
+| oci://ghcr.io/magda-io/charts | magda-common | 2.1.1 |
 
 ## Values
 
@@ -106,7 +106,7 @@ Kubernetes: `>= 1.14.0-0`
 | defaultAdminUserId | string | `"00000000-0000-4000-8000-000000000000"` | which system account we used to talk to auth api The value of this field will only be used when `global.defaultAdminUserId` has no value |
 | defaultImage.imagePullSecret | bool | `false` |  |
 | defaultImage.pullPolicy | string | `"IfNotPresent"` |  |
-| defaultImage.repository | string | `"docker.io/data61"` |  |
+| defaultImage.repository | string | `"ghcr.io/magda-io"` |  |
 | global | object | `{"authPluginRedirectUrl":"/sign-in-redirect","externalUrl":"","image":{},"rollingUpdate":{}}` | only for providing appropriate default value for helm lint |
 | image.name | string | `"magda-auth-internal"` |  |
 | replicas | int | `1` | no. of initial replicas |
