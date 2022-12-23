@@ -1,6 +1,6 @@
 # magda-auth-internal
 
-![Version: 1.2.3](https://img.shields.io/badge/Version-1.2.3-informational?style=flat-square)
+![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square)
 
 A MAGDA authentication plugin supports local password authentication.
 
@@ -11,9 +11,11 @@ Requires MAGDA version 0.0.58 or above.
 1. Add the auth plugin as a [Helm Chart Dependency](https://helm.sh/docs/helm/helm_dependency/) in your deployment Helm Chart [Chart.yaml](https://helm.sh/docs/topics/charts/#chart-dependencies):
 ```yaml
 - name: magda-auth-internal
-  version: 1.0.1 # or put latest version number here
-  repository: https://charts.magda.io
+  version: "2.0.0" # or put latest version number here
+  repository: "oci://ghcr.io/magda-io/charts"
 ```
+
+> Since v2.0.0, we use [Github Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry) as our official Helm Chart & Docker Image release registry.
 
 2. (Optional) Config the auth plugin in your deployment [Values file](https://helm.sh/docs/chart_template_guide/values_files/). Support parameters can be found from the `Values` section below:
 e.g. You can optionally set the text content below the login form.
@@ -80,7 +82,7 @@ Kubernetes: `>= 1.14.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| https://charts.magda.io | magda-common | 1.0.0-alpha.4 |
+| oci://ghcr.io/magda-io/charts | magda-common | 2.1.1 |
 
 ## Values
 
@@ -106,7 +108,7 @@ Kubernetes: `>= 1.14.0-0`
 | defaultAdminUserId | string | `"00000000-0000-4000-8000-000000000000"` | which system account we used to talk to auth api The value of this field will only be used when `global.defaultAdminUserId` has no value |
 | defaultImage.imagePullSecret | bool | `false` |  |
 | defaultImage.pullPolicy | string | `"IfNotPresent"` |  |
-| defaultImage.repository | string | `"docker.io/data61"` |  |
+| defaultImage.repository | string | `"ghcr.io/magda-io"` |  |
 | global | object | `{"authPluginRedirectUrl":"/sign-in-redirect","externalUrl":"","image":{},"rollingUpdate":{}}` | only for providing appropriate default value for helm lint |
 | image.name | string | `"magda-auth-internal"` |  |
 | replicas | int | `1` | no. of initial replicas |
