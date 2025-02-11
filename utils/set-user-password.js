@@ -76,8 +76,8 @@ async function createUser(dbClient, options) {
     }
 
     result = await dbClient.query(
-        `INSERT INTO "users" ("id", "displayName", "email", "source", "sourceId", "isAdmin") VALUES(uuid_generate_v4(), $1, $2, 'internal', $3, $4) RETURNING id`,
-        [displayName, email, email, isAdmin]
+        `INSERT INTO "users" ("id", "displayName", "email", "source", "sourceId") VALUES(uuid_generate_v4(), $1, $2, 'internal', $3) RETURNING id`,
+        [displayName, email, email]
     );
 
     const userInfo = result.rows[0];
