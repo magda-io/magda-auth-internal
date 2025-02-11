@@ -1,3 +1,7 @@
+# 2.0.1
+- Assign admin role to new user if isAdmin option is present when running script `utils/set-user-password.js`.
+- Not to set `isAdmin` field in the `users` table. This field is not being used and will be removed soon.
+
 # 2.0.0
 
 -   Upgrade nodejs to version 14

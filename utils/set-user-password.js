@@ -76,8 +76,8 @@ async function createUser(dbClient, options) {
     }
 
     result = await dbClient.query(
-        `INSERT INTO "users" ("id", "displayName", "email", "source", "sourceId", "isAdmin") VALUES(uuid_generate_v4(), $1, $2, 'internal', $3, $4) RETURNING id`,
-        [displayName, email, email, isAdmin]
+        `INSERT INTO "users" ("id", "displayName", "email", "source", "sourceId") VALUES(uuid_generate_v4(), $1, $2, 'internal', $3) RETURNING id`,
+        [displayName, email, email]
     );
 
     const userInfo = result.rows[0];
@@ -87,6 +87,13 @@ async function createUser(dbClient, options) {
         `INSERT INTO "user_roles" ("id", "user_id", "role_id") VALUES(uuid_generate_v4(), $1, '00000000-0000-0002-0000-000000000000') RETURNING id`,
         [userId]
     );
+
+    if (isAdmin) {
+        await dbClient.query(
+            `INSERT INTO "user_roles" ("id", "user_id", "role_id") VALUES(uuid_generate_v4(), $1, '00000000-0000-0003-0000-000000000000') RETURNING id`,
+            [userId]
+        );
+    }
 
     return userId;
 }
