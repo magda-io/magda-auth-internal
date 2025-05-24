@@ -37,6 +37,7 @@
     "@types/express-session": "^1.18.1",
     "@types/lodash": "^4.14.162",
     "@types/mocha": "^9.1.1",
+    "@types/node": "^18.19.0",
     "@types/passport": "1.0.17",
     "@types/passport-local": "^1.0.33",
     "@types/pg": "^8.6.5",
