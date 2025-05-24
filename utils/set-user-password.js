@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-const pkg = require("../package.json");
-const program = require("commander");
-const chalk = require("chalk");
-const bcrypt = require("bcrypt");
-const pwgen = require("pwgen/lib/pwgen_module");
-const getDBPool = require("./db/getDBPool");
-const isUuid = require("isuuid");
-const isEmail = require("isemail").validate;
+import pkg from "../package.json" assert { type: "json" };
+import program from "commander";
+import chalk from "chalk";
+import bcrypt from "bcrypt";
+import generator from "generate-password";
+import getDBPool from "./db/getDBPool.js";
+import isUuid from "isuuid";
+import { validate as isEmail } from "isemail";
 
 program
     .version(pkg.version)
@@ -166,11 +166,13 @@ async function getUserIdFromEmailOrUid(dbClient, user) {
         let password = options.password;
 
         if (!options.password) {
-            const pwgenGenerator = new pwgen();
-            pwgenGenerator.includeCapitalLetter = true;
-            pwgenGenerator.includeNumber = true;
-            pwgenGenerator.maxLength = AUTO_PASSWORD_LENGTH;
-            password = pwgenGenerator.generate();
+            password = generator.generate({
+                length: AUTO_PASSWORD_LENGTH,
+                numbers: true,
+                uppercase: true,
+                lowercase: true,
+                excludeSimilarCharacters: true
+            });
         }
 
         const hash = await bcrypt.hash(password, SALT_ROUNDS);
