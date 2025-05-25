@@ -142,6 +142,10 @@ export async function setUserPassword(program: Command, processArgv: string[], p
         "-a, --isAdmin",
         "Optional, valid when -c is specified. If present, the user will be created as admin user."
     )
+    .option(
+        "-r, --salt-round [number]",
+        "Optional. Specify the number of salt rounds for password hashing. Must be >= 10. Default is 12. Higher values increase security but slow down password hashing (e.g., 10 rounds ≈ 10 hashes/sec, 12 rounds ≈ 2-3 hashes/sec on a 2GHz core)."
+    )
     .parse(processArgv);
 
     const options = program.opts();
@@ -149,6 +153,14 @@ export async function setUserPassword(program: Command, processArgv: string[], p
     if (!options || (!options.user && !options.create)) {
         program.help();
         return;
+    }
+
+    let saltRound = SALT_ROUNDS;
+    if (options.saltRound !== undefined) {
+        saltRound = parseInt(options.saltRound);
+        if (isNaN(saltRound) || saltRound < 10) {
+            throw new Error("Salt rounds must be a number >= 10");
+        }
     }
 
     const dbClient = await pool.connect();
@@ -180,7 +192,7 @@ export async function setUserPassword(program: Command, processArgv: string[], p
             });
         }
 
-        const hash = await bcrypt.hash(password, SALT_ROUNDS);
+        const hash = await bcrypt.hash(password, saltRound);
 
         const credentials = await dbClient.query(
             `SELECT * FROM "credentials" WHERE "user_id"=$1 LIMIT 1`,

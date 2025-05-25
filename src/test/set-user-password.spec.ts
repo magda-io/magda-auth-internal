@@ -297,4 +297,96 @@ describe("setUserPassword function", () => {
         }
     });
 
+    it("should use default salt rounds when not specified", async () => {
+        dbQueryStub.resetHistory();
+        dbQueryStub.onCall(0).resolves({ rows: [] }); // BEGIN
+        dbQueryStub.onCall(1).resolves({ rows: [{ id: "123" }] }); // get user
+        dbQueryStub.onCall(2).resolves({ rows: [] }); // credentials not exist
+        dbQueryStub.onCall(3).resolves({}); // insert credentials
+        dbQueryStub.onCall(4).resolves({}); // commit
+        let output = "";
+        console.log = (msg) => { output += msg; };
+        try {
+            await setUserPassword(program, ["node", "script", "--user", "test@example.com", "--password", "validPass123"], pool);
+        } catch (err) {
+            expect.fail(`Unexpected error: ${err}`);
+        }
+        console.log = originalConsoleLog;
+        expect(output).to.include("Password for user (id: 123) has been set to:");
+
+        // Verify the hash uses default salt rounds
+        const hash = dbQueryStub.getCall(3).args[1][1];
+        const costMatch = hash.match(/^\$2[aby]\$(\d{2})\$/);
+        expect(costMatch).to.not.be.null;
+        expect(Number(costMatch[1])).to.equal(SALT_ROUNDS);
+    });
+
+    it("should use custom salt rounds when specified", async () => {
+        dbQueryStub.resetHistory();
+        dbQueryStub.onCall(0).resolves({ rows: [] }); // BEGIN
+        dbQueryStub.onCall(1).resolves({ rows: [{ id: "123" }] }); // get user
+        dbQueryStub.onCall(2).resolves({ rows: [] }); // credentials not exist
+        dbQueryStub.onCall(3).resolves({}); // insert credentials
+        dbQueryStub.onCall(4).resolves({}); // commit
+        let output = "";
+        console.log = (msg) => { output += msg; };
+        try {
+            await setUserPassword(program, ["node", "script", "--user", "test@example.com", "--password", "validPass123", "-r", "14"], pool);
+        } catch (err) {
+            expect.fail(`Unexpected error: ${err}`);
+        }
+        console.log = originalConsoleLog;
+        expect(output).to.include("Password for user (id: 123) has been set to:");
+
+        // Verify the hash uses custom salt rounds
+        const hash = dbQueryStub.getCall(3).args[1][1];
+        const costMatch = hash.match(/^\$2[aby]\$(\d{2})\$/);
+        expect(costMatch).to.not.be.null;
+        expect(Number(costMatch[1])).to.equal(14);
+    });
+
+    it("should reject salt rounds less than 10", async () => {
+        dbQueryStub.resetHistory();
+        try {
+            await setUserPassword(program, ["node", "script", "--user", "test@example.com", "--password", "validPass123", "-r", "9"], pool);
+            expect.fail("Should have thrown error for invalid salt rounds");
+        } catch (err) {
+            expect((err as Error).message).to.equal("Salt rounds must be a number >= 10");
+        }
+    });
+
+    it("should reject non-numeric salt rounds", async () => {
+        dbQueryStub.resetHistory();
+        try {
+            await setUserPassword(program, ["node", "script", "--user", "test@example.com", "--password", "validPass123", "-r", "invalid"], pool);
+            expect.fail("Should have thrown error for invalid salt rounds");
+        } catch (err) {
+            expect((err as Error).message).to.equal("Salt rounds must be a number >= 10");
+        }
+    });
+
+    it("should use custom salt rounds when specified with long form option (--salt-round)", async () => {
+        dbQueryStub.resetHistory();
+        dbQueryStub.onCall(0).resolves({ rows: [] }); // BEGIN
+        dbQueryStub.onCall(1).resolves({ rows: [{ id: "123" }] }); // get user
+        dbQueryStub.onCall(2).resolves({ rows: [] }); // credentials not exist
+        dbQueryStub.onCall(3).resolves({}); // insert credentials
+        dbQueryStub.onCall(4).resolves({}); // commit
+        let output = "";
+        console.log = (msg) => { output += msg; };
+        try {
+            await setUserPassword(program, ["node", "script", "--user", "test@example.com", "--password", "validPass123", "--salt-round", "15"], pool);
+        } catch (err) {
+            expect.fail(`Unexpected error: ${err}`);
+        }
+        console.log = originalConsoleLog;
+        expect(output).to.include("Password for user (id: 123) has been set to:");
+
+        // Verify the hash uses custom salt rounds
+        const hash = dbQueryStub.getCall(3).args[1][1];
+        const costMatch = hash.match(/^\$2[aby]\$(\d{2})\$/);
+        expect(costMatch).to.not.be.null;
+        expect(Number(costMatch[1])).to.equal(15);
+    });
+
 }); 
