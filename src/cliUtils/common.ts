@@ -1,58 +1,22 @@
-#!/usr/bin/env node
-import pkg from "../package.json" assert { type: "json" };
-import program from "commander";
 import chalk from "chalk";
 import bcrypt from "bcrypt";
 import generator from "generate-password";
-import getDBPool from "./db/getDBPool.js";
-import isUuid from "isuuid";
+import { Command } from "commander";
+import { v4 as isUuid } from "is-uuid";
+import pg from "pg";
 import { validate as isEmail } from "isemail";
-
-program
-    .version(pkg.version)
-    .usage("[options]")
-    .description(
-        `A tool for setting magda users' password. Version: ${pkg.version}\n` +
-            "By Default, a random password will be auto generate if -p or --password option does not present.\n" +
-            `The database connection to auth DB is required, the following environment variables will be used to create a connection:\n` +
-            `  POSTGRES_HOST: database host; If not available in env var, 'localhost' will be used.\n` +
-            `  POSTGRES_DB: database name; If not available in env var, 'auth' will be used.\n` +
-            `  POSTGRES_PORT: database port; If not available in env var, 5432 will be used.\n` +
-            `  POSTGRES_USER: database username; If not available in env var, 'postgres' will be used.\n` +
-            `  POSTGRES_PASSWORD: database password; If not available in env var, '' will be used.`
-    )
-    .option(
-        "-u, --user [User ID or email]",
-        "Specify the user id or email of the user whose password will be reset. If -c switch not present, this switch must be used."
-    )
-    .option(
-        "-c, --create [user email]",
-        "Create the user record before set the password rather than set password for an existing user. If -u switch not present, this switch must be used."
-    )
-    .option(
-        "-p, --password [password string]",
-        "Optional. Specify the password that reset the user account to."
-    )
-    .option(
-        "-n, --displayName [user display name]",
-        "Optional, valid when -c is specified. If not present, default display will be same as the email address. Use double quote if the name contains space."
-    )
-    .option(
-        "-a, --isAdmin",
-        "Optional, valid when -c is specified. If present, the user will be created as admin user."
-    )
-    .parse(process.argv);
+import pkg from "../../package.json";
 
 /**
  * Salting round. Default is 10. means 2^10 rounds
  * When 10, approx. ~10 hashes can be generated per sec (on a 2GHz core) roughly
  * We set to 12 here (based on OWASP). Roughly 2-3 hashes/sec
  */
-const SALT_ROUNDS = 12;
-const MIN_PASSWORD_LENGTH = 6;
-const AUTO_PASSWORD_LENGTH = 8;
+export const SALT_ROUNDS = 12;
+export const MIN_PASSWORD_LENGTH = 6;
+export const AUTO_PASSWORD_LENGTH = 8;
 
-async function createUser(dbClient, options) {
+export async function createUser(dbClient: pg.PoolClient, options: any) {
     const email = options.create;
     if (!isEmail(email)) {
         throw new Error(
@@ -98,8 +62,14 @@ async function createUser(dbClient, options) {
     return userId;
 }
 
-async function getUserIdFromEmailOrUid(dbClient, user) {
-    user = user.trim();
+export async function getUserIdFromEmailOrUid(
+    dbClient: pg.PoolClient,
+    userEmailOrId: string
+) {
+    if(typeof userEmailOrId !== "string") {
+        throw new Error("Please provide valid value for --user switch");
+    } 
+    const user = userEmailOrId.trim();
     let userId;
     if (isEmail(user)) {
         const result = await dbClient.query(
@@ -137,7 +107,43 @@ async function getUserIdFromEmailOrUid(dbClient, user) {
     return userId;
 }
 
-(async () => {
+export async function setUserPassword(program: Command, processArgv: string[], pool: pg.Pool) {
+
+    program
+    .version(pkg.version)
+    .usage("[options]")
+    .description(
+        `A tool for setting magda users' password. Version: ${pkg.version}\n` +
+            "By Default, a random password will be auto generate if -p or --password option does not present.\n" +
+            `The database connection to auth DB is required, the following environment variables will be used to create a connection:\n` +
+            `  POSTGRES_HOST: database host; If not available in env var, 'localhost' will be used.\n` +
+            `  POSTGRES_DB: database name; If not available in env var, 'auth' will be used.\n` +
+            `  POSTGRES_PORT: database port; If not available in env var, 5432 will be used.\n` +
+            `  POSTGRES_USER: database username; If not available in env var, 'postgres' will be used.\n` +
+            `  POSTGRES_PASSWORD: database password; If not available in env var, '' will be used.`
+    )
+    .option(
+        "-u, --user [User ID or email]",
+        "Specify the user id or email of the user whose password will be reset. If -c switch not present, this switch must be used."
+    )
+    .option(
+        "-c, --create [user email]",
+        "Create the user record before set the password rather than set password for an existing user. If -u switch not present, this switch must be used."
+    )
+    .option(
+        "-p, --password [password string]",
+        "Optional. Specify the password that reset the user account to."
+    )
+    .option(
+        "-n, --displayName [user display name]",
+        "Optional, valid when -c is specified. If not present, default display will be same as the email address. Use double quote if the name contains space."
+    )
+    .option(
+        "-a, --isAdmin",
+        "Optional, valid when -c is specified. If present, the user will be created as admin user."
+    )
+    .parse(processArgv);
+
     const options = program.opts();
 
     if (!options || (!options.user && !options.create)) {
@@ -145,7 +151,6 @@ async function getUserIdFromEmailOrUid(dbClient, user) {
         return;
     }
 
-    const pool = getDBPool();
     const dbClient = await pool.connect();
 
     try {
@@ -206,9 +211,4 @@ async function getUserIdFromEmailOrUid(dbClient, user) {
     } finally {
         dbClient.release();
     }
-
-    process.exit();
-})().catch((e) => {
-    console.error(chalk.red(`Failed to reset user password: ${e}`));
-    process.exit(1);
-});
+}

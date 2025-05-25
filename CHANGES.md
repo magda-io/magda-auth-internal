@@ -13,10 +13,12 @@
 - upgrade typescript to 5.8.3
 - upgrade bcrypt to 5.1.1
 - upgrade lodash to 4.17.21
+- upgrade commander to 13.1.0
 - upgrade helm-docs to 1.14.2
 - replace pwgen with generate-password
 - upgrade CI pipeline
 - add test cases
+- use tsx to run set-user-password
 
 # 2.0.1
 - Assign admin role to new user if isAdmin option is present when running script `utils/set-user-password.js`.
