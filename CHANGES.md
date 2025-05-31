@@ -19,6 +19,7 @@
 - upgrade CI pipeline
 - add test cases
 - use tsx to run set-user-password
+- Update default salt rounds (used in password creation scripts) to 11
 
 # 2.0.1
 - Assign admin role to new user if isAdmin option is present when running script `utils/set-user-password.js`.
