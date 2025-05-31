@@ -10,9 +10,12 @@ import pkg from "../../package.json";
 /**
  * Salting round. Default is 10. means 2^10 rounds
  * When 10, approx. ~10 hashes can be generated per sec (on a 2GHz core) roughly
- * We set to 12 here (based on OWASP). Roughly 2-3 hashes/sec
+ * We default to 11 salt rounds (~5 hashes/sec) for a good balance of security and performance. 
+ * You can increase this to 12 or higher if running in a high-security environment or on more powerful infrastructure.
+ * Please note, you don't need to modify this script to set a different salt rounds. 
+ * Instead, you can set `-r [round number]` switch when run the password creation script.
  */
-export const SALT_ROUNDS = 12;
+export const SALT_ROUNDS = 11;
 export const MIN_PASSWORD_LENGTH = 6;
 export const AUTO_PASSWORD_LENGTH = 8;
 
