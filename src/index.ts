@@ -1,17 +1,19 @@
 import express from "express";
 import path from "path";
 import yargs from "yargs";
-import createAuthPluginRouter from "./createAuthPluginRouter";
+import { hideBin } from "yargs/helpers";
+import createAuthPluginRouter from "./createAuthPluginRouter.js";
 import {
     createMagdaSessionRouter,
     AuthPluginConfig
 } from "@magda/authentication-plugin-sdk";
 import { UserToken } from "@magda/auth-api-client";
-import createPool from "./createPool";
+import createPool from "./createPool.js";
+import { __dirname } from "@magda/esm-utils";
 
 const coerceJson = (path?: string) => path && require(path);
 
-const argv = yargs
+const argv = yargs(hideBin(process.argv))
     .config()
     .help()
     .option("listenPort", {
@@ -21,7 +23,7 @@ const argv = yargs
     })
     .option("authPluginRedirectUrl", {
         describe:
-            "The URL that auth plugin shoulud redirect and report authentication report to.",
+            "The URL that auth plugin should redirect and report authentication report to.",
         type: "string",
         default: "/sign-in-redirect"
     })
@@ -92,7 +94,8 @@ const argv = yargs
             "The user id to use when making authenticated requests to the registry",
         type: "string",
         default: process.env.USER_ID || process.env.npm_package_config_userId
-    }).argv;
+    })
+    .parseSync();
 
 // Create a new Express application.
 const app = express();
@@ -106,7 +109,7 @@ app.get("/healthz", (req, res) => res.send("OK"));
  * a 36x36 size icon to be shown on frontend login page
  */
 app.get("/icon.svg", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "../assets/magda.png"))
+    res.sendFile(path.resolve(__dirname(), "../assets/magda.png"))
 );
 
 /**
@@ -114,7 +117,7 @@ app.get("/icon.svg", (req, res) =>
  * See [authentication-plugin-spec.md](https://github.com/magda-io/magda/blob/master/docs/docs/authentication-plugin-spec.md)
  */
 app.get("/config", (req, res) =>
-    res.json((argv.authPluginConfigJson as any) as AuthPluginConfig)
+    res.json(argv.authPluginConfigJson as any as AuthPluginConfig)
 );
 
 /**

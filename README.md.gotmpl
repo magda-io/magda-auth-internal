@@ -69,6 +69,7 @@ Options:
   -p, --password [password string]       Optional. Specify the password that reset the user account to.
   -n, --displayName [user display name]  Optional, valid when -c is specified. If not present, default display will be same as the email address. Use double quote if the name contains space.
   -a, --isAdmin                          Optional, valid when -c is specified. If present, the user will be created as admin user.
+  -sr, --salt-round [number]            Optional. Specify the number of salt rounds for password hashing. Must be >= 10. Default is 12. Higher values increase security but slow down password hashing (e.g., 10 rounds ≈ 10 hashes/sec, 12 rounds ≈ 2-3 hashes/sec on a 2GHz core).
   -h, --help                             output usage information
 ```
 

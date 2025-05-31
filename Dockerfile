@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:18
 RUN mkdir -p /usr/src/app
 COPY . /usr/src/app
 # Reinstall bcrypt to pull correct binary for linux

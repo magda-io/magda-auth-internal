@@ -1,26 +1,24 @@
 {
   "name": "magda-auth-internal",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A MAGDA authentication plugin supports local password authentication.",
   "repository": "https://github.com/magda-io/magda-auth-internal.git",
   "author": "",
   "license": "Apache-2.0",
+  "type": "module",
   "private": true,
-  "bin": {
-    "set-user-password": "./utils/set-user-password.js"
-  },
   "scripts": {
     "prebuild": "rimraf dist tsconfig.tsbuildinfo",
-    "set-user-password": "./utils/set-user-password.js",
+    "set-user-password": "tsx ./src/cliUtils/setUserPassword.ts",
     "build": "tsc -b",
     "watch": "tsc -b --watch",
     "start": "node dist/index.js",
-    "dev": "run-typescript-in-nodemon src/index.ts",
-    "test": "mocha --require ts-node/register \"src/test/**/*.spec.ts\"",
+    "dev": "tsx src/index.ts",
+    "test": "mocha",
     "docker-build-local": "create-docker-context-for-node-component --build --push --tag auto --local",
     "docker-build-prod": "create-docker-context-for-node-component --build --push --tag auto",
-    "helm-lint": "helm lint deploy/magda-auth-internal -f deploy/test-deploy.yaml",
-    "helm-docs": "helm-docs -t ./README.md.gotmpl -o ../../README.md",
+    "helm-lint": "helm template deploy/magda-auth-internal -f deploy/test-deploy.yaml 1>/dev/null",
+    "helm-docs": "docker run --rm -v \"$(pwd):/helm-docs\" -u $(id -u) jnorwood/helm-docs:v1.14.2 -t ./README.md.gotmpl -o ../../README.md",
     "update-all-charts": "helm dep up ./deploy/magda-auth-internal",
     "add-all-chart-version-changes": "git ls-files -m | grep Chart.yaml | xargs git add && git ls-files -m | grep Chart.lock | xargs git add",
     "add-all-helm-docs-changes": "yarn helm-docs && git ls-files -m | grep -i readme.md | xargs git add",
@@ -28,37 +26,49 @@
     "retag-and-push": "retag-and-push"
   },
   "devDependencies": {
-    "@magda/ci-utils": "^1.0.2",
-    "@magda/docker-utils": "^0.0.60",
-    "@types/bcrypt": "^3.0.0",
-    "@types/express": "^4.0.37",
+    "@magda/ci-utils": "^1.0.5",
+    "@magda/docker-utils": "^5.2.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/chai": "^5.2.2",
+    "@types/express": "^4.17.21",
+    "@types/express-session": "^1.18.1",
+    "@types/is-uuid": "^1.0.2",
     "@types/lodash": "^4.14.162",
     "@types/mocha": "^9.1.1",
-    "@types/passport": "1.0.3",
+    "@types/node": "^18.19.0",
+    "@types/passport": "1.0.17",
     "@types/passport-local": "^1.0.33",
+    "@types/pg": "^8.6.5",
+    "@types/serve-static": "^1.15.7",
+    "@types/sinon": "^17.0.4",
+    "@types/supertest": "^6.0.3",
     "@types/urijs": "^1.19.12",
-    "@types/yargs": "^15.0.9",
-    "chalk": "^2.4.1",
-    "commander": "^2.17.0",
+    "@types/yargs": "^17.0.33",
+    "chai": "^5.2.0",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "express-session": "^1.18.1",
+    "generate-password": "^1.7.1",
+    "is-uuid": "^1.0.2",
     "isemail": "^3.2.0",
-    "isuuid": "^0.1.0",
-    "mocha": "^10.0.0",
-    "pwgen": "0.1.6",
+    "mocha": "^10.2.0",
     "rimraf": "^3.0.2",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.2.4"
+    "sinon": "^20.0.0",
+    "supertest": "^7.1.1",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
-    "@magda/auth-api-client": "^2.1.1",
-    "@magda/authentication-plugin-sdk": "2.1.1",
-    "bcrypt": "^5.0.0",
-    "body-parser": "^1.19.0",
-    "express": "^4.15.4",
-    "lodash": "^4.17.20",
-    "passport": "0.2.2",
+    "@magda/auth-api-client": "^5.2.0",
+    "@magda/authentication-plugin-sdk": "^5.2.0",
+    "@magda/esm-utils": "^1.0.1",
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.2",
+    "lodash": "^4.17.21",
+    "passport": "0.7.0",
     "passport-local": "^1.0.0",
     "urijs": "^1.19.11",
-    "yargs": "^16.1.0"
+    "yargs": "^17.7.2"
   },
   "config": {
     "docker": {
@@ -68,6 +78,16 @@
     "jwtSecret": "squirrel",
     "SESSION_SECRET": "keyboard cat",
     "userId": "00000000-0000-4000-8000-000000000000"
+  },
+  "mocha": {
+    "exit": true,
+    "import": "tsx/esm",
+    "spec": [
+      "src/test/**/*.spec.ts"
+    ]
+  },
+  "engines": {
+    "node": ">=18.19.0"
   },
   "husky": {
     "hooks": {
