@@ -4,6 +4,7 @@
   - Upgrade `@magda/authentication-plugin-sdk` to v7 (`7.0.0-alpha.0`), which derives the `node-postgres` `ssl` option from `PGSSLMODE`/`PGSSLROOTCERT` explicitly (fixes `SELF_SIGNED_CERT_IN_CHAIN` against Magda's self-signed server cert).
   - Upgrade the `magda-common` Helm chart dependency to `7.0.0-alpha.0` and include the `magda.db-client-sslmode-env-v1` helper contract so the pod receives `PGSSLMODE` for the `session-db` client connection.
   - Add `global.magdaCompatibilityCheck` (default `true`). Standalone `helm template`/`helm lint` (no `magda-core` present) must set it to `false`; the `helm-lint` script now does so.
+  - This plugin also connects to the **auth database** (to verify local passwords) via its own pool: `src/createPool.ts` now derives `ssl` from `PGSSLMODE`/`PGSSLROOTCERT` too, so password verification works against an enforced-SSL database. The `set-user-password` CLI (`getDBConfig`) honours `PGSSLMODE` as well.
 - Upgrade to Node.js 22 (`engines`, CI workflows and the Docker base image), required by the v7 `@magda/authentication-plugin-sdk`.
 - **Requires Magda v7+** (breaking change). Deploy as a chart dependency in the same Helm release as Magda; deploying against Magda v6 or lower fails the `magda.compatibility-check` handshake at render time — stay on the `3.x` line for those.
 
