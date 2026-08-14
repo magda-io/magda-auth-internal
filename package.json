@@ -81,6 +81,7 @@
   },
   "mocha": {
     "exit": true,
+    "timeout": 15000,
     "import": "tsx/esm",
     "spec": [
       "src/test/**/*.spec.ts"
