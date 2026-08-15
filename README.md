@@ -10,10 +10,10 @@ Pick the chart version that matches your Magda release:
 
 | This chart | Requires Magda | Notes |
 | ---------- | -------------- | ----- |
-| **`v4.x`** (from `v4.0.0-alpha.0`) | **v7.0.0 or above** | Connects to `session-db` over **TLS** when the database enforces SSL. Uses the versioned `magda.db-client-sslmode-env-v1` Helm helper contract (see below) and runs on **Node.js 22**. |
+| **`v4.x`** (from `v4.0.0-alpha.0`) | **v7.0.0 or above** | Connects to both its databases (`session-db` and the `auth` DB) over **TLS** when the database enforces SSL. Uses the versioned `magda.db-client-sslmode-env-v1` Helm helper contract (see below) plus `magda.db-client-ca-env-v1` for `sslmode: verify-ca`/`verify-full` server-certificate verification (needs `magda-core` `>= 7.0.0-alpha.1`), and runs on **Node.js 22**. |
 | **`v3.x`** | **v6.x or below** (v0.0.58+) | Use this line if you run **Magda v6 or lower**. Does not emit `PGSSLMODE` and will not work against an SSL-enforced external database. |
 
-> ⚠️ **`v4.x` is a breaking change and requires Magda v7+.** Do **not** deploy `v4.x` alongside Magda v6 or lower — the `magda.db-client-sslmode-env-v1` contract is only provided by `magda-core` v7+, and rendering will fail closed with `no template "magda.compatibility-check" associated` (this is intentional; see [Magda Helm helper-contract compatibility check](#magda-helm-helper-contract-compatibility-check) below).
+> ⚠️ **`v4.x` is a breaking change and requires Magda v7+** (on the v7 pre-release line, **`>= 7.0.0-alpha.1`**, which first shipped the `db-client-ca-env-v1` contract this chart now calls). Do **not** deploy `v4.x` alongside Magda v6 or lower, or an earlier v7 alpha — the required helper contracts are only provided by a recent enough `magda-core`, and rendering will fail closed with `no template "magda.compatibility-check" associated` or a contract-not-supported error (this is intentional; see [Magda Helm helper-contract compatibility check](#magda-helm-helper-contract-compatibility-check) below).
 
 ### Magda Helm helper-contract compatibility check
 
@@ -111,7 +111,7 @@ Kubernetes: `>= 1.14.0-0`
 
 | Repository | Name | Version |
 |------------|------|---------|
-| oci://ghcr.io/magda-io/charts | magda-common | 7.0.0-alpha.0 |
+| oci://ghcr.io/magda-io/charts | magda-common | 7.0.0-alpha.1 |
 
 ## Values
 
