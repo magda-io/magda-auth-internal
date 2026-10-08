@@ -6,7 +6,7 @@ against the delivered CA, for **both** of its DB connections (`session-db` and
 the `auth` DB) — run against a real cluster (e.g. minikube).
 
 This is the plugin-side counterpart to Magda's own
-[`db-tls-verify-full`](https://github.com/magda-io/magda/blob/next/docs/docs/e2e-test-cases/db-tls-verify-full.md)
+[`db-tls-verify-full`](https://github.com/magda-io/magda/blob/main/docs/docs/e2e-test-cases/db-tls-verify-full.md)
 case, and it exercises the `magda.db-client-ca-env-v1` helper contract
 (magda-io/magda#3772 / #3773) that delivers the CA to external charts.
 

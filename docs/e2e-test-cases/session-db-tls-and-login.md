@@ -31,7 +31,7 @@ The `magda.db-client-sslmode-env-v1` shim calls `magda.compatibility-check`, a
 template that lives in `magda-core`. Helm's template namespace is per release,
 so the plugin must be installed **in the same release as `magda-core`** — as a
 chart **dependency** (umbrella chart), not a separate `helm install`. See
-[Magda Helm Helper Contracts](https://github.com/magda-io/magda/blob/next/docs/docs/helm-helper-contracts.md).
+[Magda Helm Helper Contracts](https://github.com/magda-io/magda/blob/main/docs/docs/helm-helper-contracts.md).
 
 ## Setup
 
